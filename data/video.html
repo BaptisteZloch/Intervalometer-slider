@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Intervallomètre</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1' charset='UTF-8' />
+    <link rel="stylesheet" type="text/css" href="w3.css">
+    <script type="text/javascript" src="jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+
+    <style>
+        .slider {
+            -webkit-appearance: none;
+            width: 75%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #d60c0c;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #d60c0c;
+            cursor: pointer;
+        }
+    </style>
+    <style>
+        /* The switch - the box around the slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* The slider */
+        .slider2 {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider2:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider2 {
+            background-color: #2196F3;
+        }
+
+        input:focus+.slider2 {
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked+.slider2:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider2.round {
+            border-radius: 34px;
+        }
+
+        .slider2.round:before {
+            border-radius: 50%;
+        }
+    </style>
+    <script>
+        function uptdateValuetemps() {
+            document.getElementById("valeurtemps").innerHTML = document.getElementById("myRange").value;
+            var tempstot = document.getElementById("myRange").value; //temps en seconde
+            tempstot = tempstot / 60;
+            var ent = Math.floor(tempstot);
+            var dec = tempstot - ent;
+            if (dec != 0) {
+                dec = dec * 60;
+                document.getElementById("TotalTime").innerHTML = "Durée totale : " + ent + " mn " + Math.floor(dec) + " s";
+            }
+            else {
+                document.getElementById("TotalTime").innerHTML = "Durée totale : " + ent + " mn ";
+            }
+        }
+        $(document).ready(function () {
+            $("#envoyer").click(function () {
+                var TempsPose = $("#myRange").val();
+                var Longueur = $("#myRange3").val();
+                var Angle = $("#myRange4").val();
+                console.log("avant le http_post")
+                $.post("envoi_video", {
+                    tpsposes: TempsPose,
+                    longueur: Longueur,
+                    angle: Angle
+                });
+            });
+        });
+
+    </script>
+</head>
+
+<body class="w3-animate-opacity">
+
+    <div class="w3-card w3-green w3-padding-small">
+        <h1 class="w3-center">Vidéo</h1> <a href="/" class="w3-button w3-ripple w3-blue w3-center">Retour</a>
+    </div>
+
+    <div class="w3-card w3-padding-24 w3-margin">
+        <div class="w3-center w3-xxlarge">
+            <span id="TotalTime">Durée total : 10 s</span>
+        </div>
+        <div class="slidecontainer w3-center">
+            <p>Temps de vidéo : <span id="valeurtemps">10</span>s</p>
+            <span class="font-weight-bold indigo-text ml-2 mt-1">1s</span>
+            <input onchange="uptdateValuetemps()" type="range" min="1" max="1200" value="10" class="slider"
+                id="myRange">
+            <span class="font-weight-bold indigo-text ml-2 mt-1">1200s</span>
+        </div>
+        <div class="w3-center w3-margin">
+            <label class="switch">
+                <input type="checkbox" id="cblong" checked>
+                <div class="slider2 round"></div>
+            </label>
+            <label for="cbDG">&nbsp; Droite vers la gauche :</label>
+            <input type="checkbox" id="cbDG">
+        </div>
+        <div class="slidecontainer w3-center">
+            <p>Longueur : <span id="valeurlongueur">50</span>cm</p>
+            <span class="font-weight-bold indigo-text ml-2 mt-1">1cm</span>
+            <input type="range" min="1" max="80" value="50" class="slider" id="myRange3">
+            <span class="font-weight-bold indigo-text ml-2 mt-1">80cm</span>
+        </div>
+        <div class="w3-center w3-margin">
+            <label class="switch">
+                <input type="checkbox" id="cbangle" checked>
+                <div class="slider2 round"></div>
+            </label>
+            <label for="cbAH">&nbsp; Sens anti-horaire :</label>
+            <input type="checkbox" id="cbAH">
+        </div>
+        <div class="slidecontainer w3-center">
+            <p>Angle : <span id="valeurangle">360</span>°</p>
+            <span class="font-weight-bold indigo-text ml-2 mt-1">1°</span>
+            <input type="range" min="1" max="360" value="360" class="slider" id="myRange4">
+            <span class="font-weight-bold indigo-text ml-2 mt-1">360°</span>
+        </div>
+        <div class="w3-center">
+            <br>
+            <br>
+            <a href="index.html" id="envoyer" class="w3-button w3-ripple w3-green w3-center">Envoyer !</a>
+        </div>
+    </div>
+    <div class="w3-padding w3-center">
+        <em><a href="http://www.zlochteamastro.com" style="text-decoration: none;">ZlochTeamAstro</a></em>
+    </div>
+</body>
+
+</html>
